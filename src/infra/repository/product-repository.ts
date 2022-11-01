@@ -1,5 +1,5 @@
-import Product from 'domain/entity/product'
-import ProductRepositoryInterface from 'domain/repository/product-repository-interface'
+import Product from '../../domain/entity/product'
+import ProductRepositoryInterface from '../../domain/repository/product-repository-interface'
 import ProductModel from '../db/sequelize/model/product'
 
 export default class ProductRepository implements ProductRepositoryInterface {
@@ -23,7 +23,13 @@ export default class ProductRepository implements ProductRepositoryInterface {
   }
 
   async find(id: string): Promise<Product> {
-    throw new Error("method not implemented")
+    const productModel = await ProductModel.findOne({ where: { id }})
+
+    return new Product(
+      productModel.id,
+      productModel.name,
+      productModel.price
+    )
   }
 
   async findAll(): Promise<Product[]> {
