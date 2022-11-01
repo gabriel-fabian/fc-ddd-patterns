@@ -18,6 +18,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "reflect-metadata": "^0.1.13",
+    "sequelize": "^6.25.3",
+    "sequelize-typescript": "^2.1.5",
+    "sqlite3": "^5.1.2",
     "uuid": "^9.0.0"
   }
 }
