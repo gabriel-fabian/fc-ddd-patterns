@@ -1,6 +1,6 @@
 import Order from '../../../src/domain/entity/order'
 import Customer from '../../../src/domain/entity/customer'
-import OrderItem from '../../../src/domain/entity/order_item'
+import OrderItem from '../../../src/domain/entity/order-item'
 import OrderService from '../../../src/domain/service/order_service'
 
 describe('OrderService unit tests', () => {
