@@ -1,8 +1,8 @@
 import { Sequelize } from 'sequelize-typescript'
-import { Customer, Order, Product } from '@/domain/entity'
+import { Customer, Order, OrderItem, Product } from '@/domain/entity'
 import { CustomerModel, OrderItemModel, OrderModel, ProductModel } from '@/infra/db/sequelize/model'
 import { CustomerRepository, OrderRepository, ProductRepository } from '@/infra/repository'
-import { mockCustomer, mockProduct, mockOrder } from '@/tests/domain/mocks'
+import { mockCustomer, mockProduct, mockOrder, mockOrderItem } from '@/tests/domain/mocks'
 
 const makeSut = (): OrderRepository => new OrderRepository()
 
@@ -20,9 +20,9 @@ const makeProduct = async (): Promise<Product> => {
   return product
 }
 
-const makeOrder = async (customer: Customer, product: Product): Promise<Order> => {
+const makeOrder = async (customer: Customer, orderItems: OrderItem[]): Promise<Order> => {
   const sut   = makeSut()
-  const order = mockOrder(customer, product)
+  const order = mockOrder(customer, orderItems)
   await sut.create(order)
   return order
 }
@@ -49,8 +49,8 @@ describe('OrderRepository', () => {
   it('should create a new order', async () => {
     const customer  = await makeCustomer()
     const product   = await makeProduct()
-    const order     = await makeOrder(customer, product)
-    const orderItem = order.items[0]
+    const orderItem = mockOrderItem(product)
+    const order     = await makeOrder(customer, [orderItem])
 
     const orderModel = await OrderModel.findOne({
       where: { id: order.id },
@@ -69,6 +69,47 @@ describe('OrderRepository', () => {
           quantity: orderItem.quantity,
           order_id: order.id,
           product_id: product.id
+        }
+      ]
+    })
+  })
+
+  it('should update an order', async () => {
+    const customer   = await makeCustomer()
+    const product    = await makeProduct()
+    const orderItem  = mockOrderItem(product)
+    const order      = await makeOrder(customer, [orderItem])
+    const product2   = await makeProduct()
+    const orderItem2 = mockOrderItem(product2)
+
+    order.addItem(orderItem2)
+    const sut = makeSut()
+    await sut.update(order)
+
+    const orderModel = await OrderModel.findOne({ where: { id: order.id }, include: ['items']})
+
+    console.log(orderModel.toJSON())
+
+    expect(orderModel?.toJSON()).toStrictEqual({
+      id: order.id,
+      customer_id: customer.id,
+      total: order.total(),
+      items: [
+        {
+          id: orderItem.id,
+          name: orderItem.name,
+          price: orderItem.price,
+          quantity: orderItem.quantity,
+          order_id: order.id,
+          product_id: product.id
+        },
+        {
+          id: orderItem2.id,
+          name: orderItem2.name,
+          price: orderItem2.price,
+          quantity: orderItem2.quantity,
+          order_id: order.id,
+          product_id: product2.id
         }
       ]
     })
