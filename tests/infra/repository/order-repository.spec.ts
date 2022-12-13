@@ -125,4 +125,12 @@ describe('OrderRepository', () => {
 
     expect(order).toStrictEqual(orderResult)
   })
+
+  it('should throw if no order is found', async () => {
+    const sut = makeSut()
+
+    expect(async () => {
+      await sut.find(faker.datatype.uuid())}
+    ).rejects.toThrow('Order not found')
+  })
 })
