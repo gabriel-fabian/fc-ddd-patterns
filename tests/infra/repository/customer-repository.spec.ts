@@ -1,9 +1,21 @@
-import { Sequelize } from 'sequelize-typescript'
 import { CustomerModel } from '@/infra/db/sequelize/model'
-import { Address, Customer } from '@/domain/entity'
 import { CustomerRepository } from '@/infra/repository'
+import { mockCustomer } from '@/tests/domain/mocks'
+import { Customer } from '@/domain/entity'
 
-describe('ProductRepository', () => {
+import { Sequelize } from 'sequelize-typescript'
+import { faker } from '@faker-js/faker'
+
+const makeSut = (): CustomerRepository => new CustomerRepository()
+
+const createCustomer = (): Customer => {
+  const customerRepository = makeSut()
+  const customer = mockCustomer()
+  customerRepository.create(customer)
+  return customer
+}
+
+describe('CustomerRepository', () => {
   let sequelize: Sequelize
 
   beforeEach(async () => {
@@ -23,88 +35,71 @@ describe('ProductRepository', () => {
   })
 
   it('should create a customer', async () => {
-    const customerRepository = new CustomerRepository()
-    const customer           = new Customer('123', 'Customer 1')
-    const address            = new Address('Street 1', 1, 'City 1', 'ZipCode 1')
-          customer.address   = address
-
-    await customerRepository.create(customer)
-    const customerModel = await CustomerModel.findOne({ where: { id: '123' }})
+    const customer = createCustomer()
+    const customerModel = await CustomerModel.findOne({ where: { id: customer.id }})
 
     expect(customerModel?.toJSON()).toStrictEqual({
-      id          : '123',
+      id          : customer.id,
       name        : customer.name,
       active      : customer.isActive(),
       rewardPoints: customer.rewardPoints,
-      street      : address.street,
-      number      : address.number,
-      city        : address.city,
-      zipCode     : address.zipCode
+      street      : customer.address.street,
+      number      : customer.address.number,
+      city        : customer.address.city,
+      zipCode     : customer.address.zipCode
     })
   })
 
   it('should update a customer', async () => {
-    const customerRepository = new CustomerRepository()
-    const customer           = new Customer('123', 'Customer 1')
-    const address            = new Address('Street 1', 1, 'Zipcode 1', 'City 1')
-          customer.address   = address
-
-    await customerRepository.create(customer)
-
-    customer.changeName('Customer 2')
-    await customerRepository.update(customer)
-    const customerModel = await CustomerModel.findOne({ where: { id: '123' }})
+    const sut      = makeSut()
+    const customer = createCustomer()
+    const name     = faker.name.firstName()
+    customer.changeName(name)
+    await sut.update(customer)
+    const customerModel = await CustomerModel.findOne({ where: { id: customer.id }})
 
     expect(customerModel?.toJSON()).toStrictEqual({
-      id          : '123',
-      name        : 'Customer 2',
+      id          : customer.id,
+      name        : name,
       active      : customer.isActive(),
       rewardPoints: customer.rewardPoints,
-      street      : address.street,
-      number      : address.number,
-      zipCode     : address.zipCode,
-      city        : address.city
+      street      : customer.address.street,
+      number      : customer.address.number,
+      zipCode     : customer.address.zipCode,
+      city        : customer.address.city
     })
   })
 
   it('should find a customer', async () => {
-    const customerRepository = new CustomerRepository()
-    const customer           = new Customer('123', 'Customer 1')
-    const address            = new Address('Street 1', 1, 'Zipcode 1', 'City 1')
-          customer.address   = address
+    const sut      = makeSut()
+    const customer = createCustomer()
 
-    await customerRepository.create(customer)
-
-    const customerResult = await customerRepository.find(customer.id)
+    const customerResult = await sut.find(customer.id)
 
     expect(customer).toStrictEqual(customerResult)
   })
 
   it('should throw an error when customer is not found', async () => {
-    const customerRepository = new CustomerRepository()
+    const sut = makeSut()
 
     expect(async () => {
-      await customerRepository.find('456ABC')
+      await sut.find(faker.datatype.uuid())
     }).rejects.toThrow('Customer not found')
   })
 
   it("should find all customers", async () => {
-    const customerRepository = new CustomerRepository();
-    const customer1          = new Customer("123", "Customer 1");
-    const address1           = new Address("Street 1", 1, "Zipcode 1", "City 1");
-          customer1.address  = address1;
+    const sut       = makeSut()
+    const customer1 = createCustomer()
     customer1.addRewardPoints(10);
     customer1.activate();
 
-    const customer2         = new Customer("456", "Customer 2");
-    const address2          = new Address("Street 2", 2, "Zipcode 2", "City 2");
-          customer2.address = address2;
-    customer2.addRewardPoints(20);
+    const customer2 = createCustomer()
+    customer2.addRewardPoints(20)
 
-    await customerRepository.create(customer1);
-    await customerRepository.create(customer2);
+    sut.update(customer1)
+    sut.update(customer2)
 
-    const customers = await customerRepository.findAll();
+    const customers = await sut.findAll();
 
     expect(customers).toHaveLength(2);
     expect(customers).toContainEqual(customer1);

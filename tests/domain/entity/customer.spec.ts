@@ -1,38 +1,42 @@
-import { Address, Customer } from '@/domain/entity'
+import { Customer } from '@/domain/entity'
+import { mockCustomer } from '@/tests/domain/mocks'
+
+import { faker } from '@faker-js/faker'
 
 describe('Customer unit tests', () => {
   it('should throw error when id is empty', () => {
     expect(() => {
-      let customer = new Customer('', 'John')
+      new Customer('', faker.name.firstName())
     }).toThrowError('Id is required')
   });
 
   it('should throw error when name is empty', () => {
     expect(() => {
-      let customer = new Customer('123', '')
+      new Customer(faker.datatype.uuid(), '')
     }).toThrowError('Name is required')
   });
 
   it('should change name', () => {
-    const customer = new Customer('123', 'John')
+    const customer = mockCustomer()
+    const name     = faker.name.firstName()
 
-    customer.changeName('Jane')
+    customer.changeName(name)
 
-    expect(customer.name).toBe('Jane')
+    expect(customer.name).toBe(name)
   })
 
   it('should activate customer', () => {
-    const customer = new Customer('1', 'Customer 1')
-    const address  = new Address('Street 1', 123, '12345-678', 'São Paulo')
-    customer.changeAddress(address)
-
+    const customer = mockCustomer()
     customer.activate()
 
     expect(customer.isActive()).toBe(true)
   })
 
   it('should deactivate customer', () => {
-    const customer = new Customer('1', 'Customer 1')
+    const customer = mockCustomer()
+    customer.activate()
+
+    expect(customer.isActive()).toBe(true)
 
     customer.deactivate()
 
@@ -41,14 +45,14 @@ describe('Customer unit tests', () => {
 
   it('should throw error when address is undefined to activate a customer', () => {
     expect(() => {
-      const customer = new Customer('1', 'Customer 1')
+      const customer = new Customer(faker.datatype.uuid(), faker.name.firstName())
 
       customer.activate()
     }).toThrowError('Address is mandatory to activate customer')
   })
 
   it('should add reward points', () => {
-    const customer = new Customer('1', 'Customer 1')
+    const customer = mockCustomer()
     expect(customer.rewardPoints).toBe(0)
 
     customer.addRewardPoints(10)

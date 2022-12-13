@@ -1,21 +1,23 @@
 import { Order, OrderItem } from '@/domain/entity'
 
+import { faker } from '@faker-js/faker'
+
 describe('Order unit tests', () => {
   it('should throw error when id is empty', () => {
     expect(() => {
-      let order = new Order('', '123', [])
+      new Order('', faker.datatype.uuid(), [])
     }).toThrowError('Id is required')
   })
 
   it('should throw error when customerId is empty', () => {
     expect(() => {
-      let order = new Order('123', '', [])
+      new Order(faker.datatype.uuid(), '', [])
     }).toThrowError('CustomerId is required')
   })
 
   it('should throw error when items is empty', () => {
     expect(() => {
-      let order = new Order('123', '123', [])
+      new Order(faker.datatype.uuid(), faker.datatype.uuid(), [])
     }).toThrowError('Item qtd must be greater than 0')
   })
 
@@ -38,7 +40,7 @@ describe('Order unit tests', () => {
   it('should throw error if the item quantity is less or equal 0', () => {
     expect(() => {
       const item = new OrderItem('i1', 'item 1', 100, 'p1', 0)
-      const order = new Order('o1', 'c1', [item])
+      new Order('o1', 'c1', [item])
     }).toThrowError('Item quantity must be greater than 0')
   })
 })

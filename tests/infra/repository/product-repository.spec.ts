@@ -2,6 +2,19 @@ import { Sequelize } from 'sequelize-typescript'
 import { Product } from '@/domain/entity'
 import { ProductModel } from '@/infra/db/sequelize/model'
 import { ProductRepository } from '@/infra/repository'
+import { mockProduct } from '@/tests/domain/mocks'
+
+import { faker } from '@faker-js/faker'
+
+
+const makeSut = (): ProductRepository => new ProductRepository()
+
+const makeProduct = (): Product => {
+  const productRepository = makeSut()
+  const product = mockProduct()
+  productRepository.create(product)
+  return product
+}
 
 describe('ProductRepository', () => {
   let sequelize: Sequelize
@@ -23,48 +36,43 @@ describe('ProductRepository', () => {
   })
 
   it('should create a product', async () => {
-    const productRepository = new ProductRepository()
-    const product = new Product('1', 'Product 1', 100)
+    const product = makeProduct()
 
-    await productRepository.create(product)
-
-    const productModel = await ProductModel.findOne({ where: { id: '1' }})
+    const productModel = await ProductModel.findOne({ where: { id: product.id }})
     expect(productModel?.toJSON()).toStrictEqual({
-      id: '1',
-      name: 'Product 1',
-      price: 100
+      id: product.id,
+      name: product.name,
+      price: product.price
     })
   })
 
   it('should update a product', async () => {
-    const productRepository = new ProductRepository()
-    const product = new Product('1', 'Product 1', 100)
+    const product = makeProduct()
+    const sut = makeSut()
 
-    await productRepository.create(product)
+    const newName  = faker.datatype.string()
+    const newPrice = faker.datatype.number()
+    product.changeName(newName)
+    product.changePrice(newPrice)
 
-    product.changeName('New Product')
-    product.changePrice(200)
+    await sut.update(product)
 
-    await productRepository.update(product)
-
-    const productModel = await ProductModel.findOne({ where: { id: '1' }})
+    const productModel = await ProductModel.findOne({ where: { id: product.id }})
 
     expect(productModel?.toJSON()).toStrictEqual({
-      id: '1',
-      name: 'New Product',
-      price: 200
+      id: product.id,
+      name: newName,
+      price: newPrice
     })
   })
 
   it('should find a product', async () => {
-    const productRepository = new ProductRepository()
-    const product = new Product('1', 'Product 1', 100)
+    const sut = makeSut()
+    const product = makeProduct()
 
-    await productRepository.create(product)
+    const productModel = await ProductModel.findOne({ where: { id: product.id }})
 
-    const productModel = await ProductModel.findOne({ where: { id: '1' }})
-
-    const foundProduct = await productRepository.find('1')
+    const foundProduct = await sut.find(product.id)
 
     expect(productModel?.toJSON()).toStrictEqual({
       id: foundProduct.id,
@@ -74,14 +82,11 @@ describe('ProductRepository', () => {
   })
 
   it('should find all products', async () => {
-    const productRepository = new ProductRepository()
-    const product = new Product('1', 'Product 1', 100)
-    await productRepository.create(product)
+    const sut = makeSut()
+    const product = makeProduct()
+    const product2 = makeProduct()
 
-    const product2 = new Product('2', 'Product 2', 200)
-    await productRepository.create(product2)
-
-    const foundProducts = await productRepository.findAll()
+    const foundProducts = await sut.findAll()
     const products = [product, product2]
 
     expect(products).toEqual(foundProducts)
