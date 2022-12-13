@@ -133,4 +133,23 @@ describe('OrderRepository', () => {
       await sut.find(faker.datatype.uuid())}
     ).rejects.toThrow('Order not found')
   })
+
+  it("should find all orders", async () => {
+    const sut        = makeSut()
+    const product1   = await makeProduct()
+    const customer1  = await makeCustomer()
+    const orderItem1 = mockOrderItem(product1)
+    const order1     = await makeOrder(customer1, [orderItem1])
+
+    const product2   = await makeProduct()
+    const customer2  = await makeCustomer()
+    const orderItem2 = mockOrderItem(product2)
+    const order2     = await makeOrder(customer2, [orderItem2])
+
+    const orders = await sut.findAll();
+
+    expect(orders).toHaveLength(2);
+    expect(orders).toContainEqual(order1);
+    expect(orders).toContainEqual(order2);
+  });
 })
