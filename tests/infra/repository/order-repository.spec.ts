@@ -1,16 +1,7 @@
 import { Sequelize } from 'sequelize-typescript'
-import Address from '../../../src/domain/entity/address'
-import Customer from '../../../src/domain/entity/customer'
-import CustomerModel from '../../../src/infra/db/sequelize/model/customer'
-import CustomerRepository from '../../../src/infra/repository/customer-repository'
-import Order from '../../../src/domain/entity/order'
-import OrderItem from '../../../src/domain/entity/order-item'
-import OrderItemModel from '../../../src/infra/db/sequelize/model/order-item'
-import OrderModel from '../../../src/infra/db/sequelize/model/order'
-import OrderRepository from '../../../src/infra/repository/order-repository'
-import Product from '../../../src/domain/entity/product'
-import ProductModel from '../../../src/infra/db/sequelize/model/product'
-import ProductRepository from '../../../src/infra/repository/product-repository'
+import { Address, Customer, Order, OrderItem, Product } from '@/domain/entity'
+import { CustomerModel, OrderItemModel, OrderModel, ProductModel } from '@/infra/db/sequelize/model'
+import { CustomerRepository, OrderRepository, ProductRepository } from '@/infra/repository'
 
 describe('OrderRepository', () => {
   let sequelize: Sequelize
