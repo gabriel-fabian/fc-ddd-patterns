@@ -1,23 +1,22 @@
+import { Sequelize } from 'sequelize-typescript'
+import { faker } from '@faker-js/faker'
 import { Customer, Order, OrderItem, Product } from '@/domain/entity'
 import { CustomerModel, OrderItemModel, OrderModel, ProductModel } from '@/infra/db/sequelize/model'
 import { CustomerRepository, OrderRepository, ProductRepository } from '@/infra/repository'
 import { mockCustomer, mockProduct, mockOrder, mockOrderItem } from '@/tests/domain/mocks'
 
-import { Sequelize } from 'sequelize-typescript'
-import { faker } from '@faker-js/faker'
-
 const makeSut = (): OrderRepository => new OrderRepository()
 
 const makeCustomer = async (): Promise<Customer> => {
   const customerRepository = new CustomerRepository()
-  const customer = mockCustomer()
+  const customer           = mockCustomer()
   await customerRepository.create(customer)
   return customer
 }
 
 const makeProduct = async (): Promise<Product> => {
   const productRepository = new ProductRepository()
-  const product = mockProduct()
+  const product           = mockProduct()
   await productRepository.create(product)
   return product
 }
@@ -88,7 +87,7 @@ describe('OrderRepository', () => {
     const sut = makeSut()
     await sut.update(order)
 
-    const orderModel = await OrderModel.findOne({ where: { id: order.id }, include: ['items']})
+    const orderModel = await OrderModel.findOne({ where: { id: order.id }, include: ['items'] })
 
     expect(orderModel?.toJSON()).toStrictEqual({
       id: order.id,
@@ -130,11 +129,11 @@ describe('OrderRepository', () => {
     const sut = makeSut()
 
     expect(async () => {
-      await sut.find(faker.datatype.uuid())}
-    ).rejects.toThrow('Order not found')
+      await sut.find(faker.datatype.uuid())
+    }).rejects.toThrow('Order not found')
   })
 
-  it("should find all orders", async () => {
+  it('should find all orders', async () => {
     const sut        = makeSut()
     const product1   = await makeProduct()
     const customer1  = await makeCustomer()
@@ -146,10 +145,10 @@ describe('OrderRepository', () => {
     const orderItem2 = mockOrderItem(product2)
     const order2     = await makeOrder(customer2, [orderItem2])
 
-    const orders = await sut.findAll();
+    const orders = await sut.findAll()
 
-    expect(orders).toHaveLength(2);
-    expect(orders).toContainEqual(order1);
-    expect(orders).toContainEqual(order2);
-  });
+    expect(orders).toHaveLength(2)
+    expect(orders).toContainEqual(order1)
+    expect(orders).toContainEqual(order2)
+  })
 })

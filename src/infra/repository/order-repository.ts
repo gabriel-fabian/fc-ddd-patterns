@@ -1,27 +1,29 @@
 import { Order, OrderItem } from '@/domain/entity'
-import OrderRepositoryInterface from '@/domain/repository/order-repository-interface'
+import { OrderRepositoryInterface } from '@/domain/repository'
 import { OrderItemModel, OrderModel } from '@/infra/db/sequelize/model'
 
 export default class OrderRepository implements OrderRepositoryInterface {
-  async create(entity: Order): Promise<void> {
-    await OrderModel.create({
-      id: entity.id,
-      customer_id: entity.customer_id,
-      total: entity.total(),
-      items: entity.items.map((item) => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        product_id: item.product_id,
-        quantity: item.quantity
-      }))
-    },
-    {
-      include: [{ model: OrderItemModel }]
-    })
+  async create (entity: Order): Promise<void> {
+    await OrderModel.create(
+      {
+        id: entity.id,
+        customer_id: entity.customer_id,
+        total: entity.total(),
+        items: entity.items.map((item) => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          product_id: item.product_id,
+          quantity: item.quantity
+        }))
+      },
+      {
+        include: [{ model: OrderItemModel }]
+      }
+    )
   }
 
-  async update(entity: Order): Promise<void> {
+  async update (entity: Order): Promise<void> {
     await OrderModel.update({
       id: entity.id,
       customer_id: entity.customer_id,
@@ -41,21 +43,27 @@ export default class OrderRepository implements OrderRepositoryInterface {
         product_id: item.product_id,
         quantity: item.quantity
       })
+
+      return null
     })
   }
 
-  async find(id: string): Promise<Order> {
+  async find (id: string): Promise<Order> {
     let orderModel: OrderModel
 
     try {
-      orderModel = await (await OrderModel.findOne({ where: { id }, include: ['items'], rejectOnEmpty: true})).toJSON()
+      orderModel = await (await OrderModel.findOne({ where: { id }, include: ['items'], rejectOnEmpty: true })).toJSON()
     } catch (error) {
       throw new Error('Order not found')
     }
 
-    const orderItems = orderModel.items.map((item) => {
-      return new OrderItem(item.id, item.name, item.price, item.product_id, item.quantity)
-    })
+    const orderItems = orderModel.items.map((item) => new OrderItem(
+      item.id,
+      item.name,
+      item.price,
+      item.product_id,
+      item.quantity
+    ))
 
     return new Order(
       orderModel.id,
@@ -64,13 +72,17 @@ export default class OrderRepository implements OrderRepositoryInterface {
     )
   }
 
-  async findAll(): Promise<Order[]> {
-    const orderModels = await OrderModel.findAll({ include: ['items']})
+  async findAll (): Promise<Order[]> {
+    const orderModels = await OrderModel.findAll({ include: ['items'] })
 
     const orders = orderModels.map((orderModel) => {
-      const orderItems = orderModel.items.map((item) => {
-        return new OrderItem(item.id, item.name, item.price, item.product_id, item.quantity)
-      })
+      const orderItems = orderModel.items.map((item) => new OrderItem(
+        item.id,
+        item.name,
+        item.price,
+        item.product_id,
+        item.quantity
+      ))
 
       return new Order(
         orderModel.id,

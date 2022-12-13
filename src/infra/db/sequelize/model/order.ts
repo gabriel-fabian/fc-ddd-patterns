@@ -21,7 +21,7 @@ export default class OrderModel extends Model {
   declare id: string
 
   @ForeignKey(() => CustomerModel)
-  @Column({allowNull: false})
+  @Column({ allowNull: false })
   declare customer_id: string
 
   @BelongsTo(() => CustomerModel)
@@ -30,6 +30,6 @@ export default class OrderModel extends Model {
   @HasMany(() => OrderItemModel)
   declare items: OrderItemModel[]
 
-  @Column({allowNull: false})
+  @Column({ allowNull: false })
   declare total: number
 }
