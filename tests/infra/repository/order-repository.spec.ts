@@ -1,8 +1,10 @@
-import { Sequelize } from 'sequelize-typescript'
 import { Customer, Order, OrderItem, Product } from '@/domain/entity'
 import { CustomerModel, OrderItemModel, OrderModel, ProductModel } from '@/infra/db/sequelize/model'
 import { CustomerRepository, OrderRepository, ProductRepository } from '@/infra/repository'
 import { mockCustomer, mockProduct, mockOrder, mockOrderItem } from '@/tests/domain/mocks'
+
+import { Sequelize } from 'sequelize-typescript'
+import { faker } from '@faker-js/faker'
 
 const makeSut = (): OrderRepository => new OrderRepository()
 
@@ -88,8 +90,6 @@ describe('OrderRepository', () => {
 
     const orderModel = await OrderModel.findOne({ where: { id: order.id }, include: ['items']})
 
-    console.log(orderModel.toJSON())
-
     expect(orderModel?.toJSON()).toStrictEqual({
       id: order.id,
       customer_id: customer.id,
@@ -113,5 +113,16 @@ describe('OrderRepository', () => {
         }
       ]
     })
+  })
+
+  it('should find an order', async () => {
+    const sut         = makeSut()
+    const product     = await makeProduct()
+    const customer    = await makeCustomer()
+    const orderItem   = mockOrderItem(product)
+    const order       = await makeOrder(customer, [orderItem])
+    const orderResult = await sut.find(order.id)
+
+    expect(order).toStrictEqual(orderResult)
   })
 })
