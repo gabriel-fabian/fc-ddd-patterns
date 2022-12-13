@@ -1,6 +1,5 @@
-import { Order } from '@/domain/entity'
+import { Order, OrderItem } from '@/domain/entity'
 import { OrderItemModel, OrderModel } from '@/infra/db/sequelize/model'
-import { OrderItem } from 'sequelize'
 
 export default class OrderRepository {
   async create(entity: Order): Promise<void> {
@@ -42,5 +41,19 @@ export default class OrderRepository {
         quantity: item.quantity
       })
     })
+  }
+
+  async find(id: string): Promise<Order> {
+    const orderModel: OrderModel = await (await OrderModel.findOne({ where: { id }, include: ['items']})).toJSON()
+
+    const orderItems = orderModel.items.map((item) => {
+      return new OrderItem(item.id, item.name, item.price, item.product_id, item.quantity)
+    })
+
+    return new Order(
+      orderModel.id,
+      orderModel.customer_id,
+      orderItems
+    )
   }
 }
