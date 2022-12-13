@@ -1,10 +1,31 @@
 import { Sequelize } from 'sequelize-typescript'
-import { Order, OrderItem, Product } from '@/domain/entity'
+import { Customer, Order, Product } from '@/domain/entity'
 import { CustomerModel, OrderItemModel, OrderModel, ProductModel } from '@/infra/db/sequelize/model'
 import { CustomerRepository, OrderRepository, ProductRepository } from '@/infra/repository'
-import { mockCustomer } from '@/tests/domain/mocks'
+import { mockCustomer, mockProduct, mockOrder } from '@/tests/domain/mocks'
 
-import { faker } from '@faker-js/faker'
+const makeSut = (): OrderRepository => new OrderRepository()
+
+const makeCustomer = async (): Promise<Customer> => {
+  const customerRepository = new CustomerRepository()
+  const customer = mockCustomer()
+  await customerRepository.create(customer)
+  return customer
+}
+
+const makeProduct = async (): Promise<Product> => {
+  const productRepository = new ProductRepository()
+  const product = mockProduct()
+  await productRepository.create(product)
+  return product
+}
+
+const makeOrder = async (customer: Customer, product: Product): Promise<Order> => {
+  const sut   = makeSut()
+  const order = mockOrder(customer, product)
+  await sut.create(order)
+  return order
+}
 
 describe('OrderRepository', () => {
   let sequelize: Sequelize
@@ -26,26 +47,10 @@ describe('OrderRepository', () => {
   })
 
   it('should create a new order', async () => {
-    const customerRepository = new CustomerRepository()
-    const customer           = mockCustomer()
-    await customerRepository.create(customer)
-
-    const productRepository = new ProductRepository()
-    const product           = new Product(faker.datatype.uuid(), faker.datatype.string(), faker.datatype.number())
-    await productRepository.create(product)
-
-    const orderItem = new OrderItem(
-      faker.datatype.uuid(),
-      product.name,
-      product.price,
-      product.id,
-      faker.datatype.number()
-    )
-
-    const order = new Order(faker.datatype.uuid(), customer.id, [orderItem])
-
-    const orderRepository = new OrderRepository()
-    await orderRepository.create(order)
+    const customer  = await makeCustomer()
+    const product   = await makeProduct()
+    const order     = await makeOrder(customer, product)
+    const orderItem = order.items[0]
 
     const orderModel = await OrderModel.findOne({
       where: { id: order.id },
