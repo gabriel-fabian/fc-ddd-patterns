@@ -44,7 +44,13 @@ export default class OrderRepository {
   }
 
   async find(id: string): Promise<Order> {
-    const orderModel: OrderModel = await (await OrderModel.findOne({ where: { id }, include: ['items']})).toJSON()
+    let orderModel: OrderModel
+
+    try {
+      orderModel = await (await OrderModel.findOne({ where: { id }, include: ['items'], rejectOnEmpty: true})).toJSON()
+    } catch (error) {
+      throw new Error('Order not found')
+    }
 
     const orderItems = orderModel.items.map((item) => {
       return new OrderItem(item.id, item.name, item.price, item.product_id, item.quantity)
