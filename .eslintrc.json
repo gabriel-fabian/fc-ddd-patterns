@@ -4,7 +4,10 @@
     "standard-with-typescript"
   ],
   "plugins": ["@typescript-eslint"],
-  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "project": "./tsconfig.json"
+  },
   "rules": {
     "import/no-unresolved": 0,
     "no-useless-constructor": 0,
