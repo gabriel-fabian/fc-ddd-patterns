@@ -1,17 +1,15 @@
 import { Sequelize } from 'sequelize-typescript'
+import { faker } from '@faker-js/faker'
 import { Product } from '@/domain/entity'
 import { ProductModel } from '@/infra/db/sequelize/model'
 import { ProductRepository } from '@/infra/repository'
 import { mockProduct } from '@/tests/domain/mocks'
 
-import { faker } from '@faker-js/faker'
-
-
 const makeSut = (): ProductRepository => new ProductRepository()
 
 const makeProduct = (): Product => {
   const productRepository = makeSut()
-  const product = mockProduct()
+  const product           = mockProduct()
   productRepository.create(product)
   return product
 }
@@ -38,7 +36,7 @@ describe('ProductRepository', () => {
   it('should create a product', async () => {
     const product = makeProduct()
 
-    const productModel = await ProductModel.findOne({ where: { id: product.id }})
+    const productModel = await ProductModel.findOne({ where: { id: product.id } })
     expect(productModel?.toJSON()).toStrictEqual({
       id: product.id,
       name: product.name,
@@ -48,7 +46,7 @@ describe('ProductRepository', () => {
 
   it('should update a product', async () => {
     const product = makeProduct()
-    const sut = makeSut()
+    const sut     = makeSut()
 
     const newName  = faker.datatype.string()
     const newPrice = faker.datatype.number()
@@ -57,7 +55,7 @@ describe('ProductRepository', () => {
 
     await sut.update(product)
 
-    const productModel = await ProductModel.findOne({ where: { id: product.id }})
+    const productModel = await ProductModel.findOne({ where: { id: product.id } })
 
     expect(productModel?.toJSON()).toStrictEqual({
       id: product.id,
@@ -67,10 +65,10 @@ describe('ProductRepository', () => {
   })
 
   it('should find a product', async () => {
-    const sut = makeSut()
+    const sut     = makeSut()
     const product = makeProduct()
 
-    const productModel = await ProductModel.findOne({ where: { id: product.id }})
+    const productModel = await ProductModel.findOne({ where: { id: product.id } })
 
     const foundProduct = await sut.find(product.id)
 
@@ -82,12 +80,12 @@ describe('ProductRepository', () => {
   })
 
   it('should find all products', async () => {
-    const sut = makeSut()
-    const product = makeProduct()
+    const sut      = makeSut()
+    const product  = makeProduct()
     const product2 = makeProduct()
 
     const foundProducts = await sut.findAll()
-    const products = [product, product2]
+    const products      = [product, product2]
 
     expect(products).toEqual(foundProducts)
   })

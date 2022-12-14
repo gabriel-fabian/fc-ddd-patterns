@@ -1,20 +1,19 @@
+import { faker } from '@faker-js/faker'
 import { Customer } from '@/domain/entity'
 import { mockCustomer } from '@/tests/domain/mocks'
-
-import { faker } from '@faker-js/faker'
 
 describe('Customer unit tests', () => {
   it('should throw error when id is empty', () => {
     expect(() => {
-      new Customer('', faker.name.firstName())
+      void new Customer('', faker.name.firstName())
     }).toThrowError('Id is required')
-  });
+  })
 
   it('should throw error when name is empty', () => {
     expect(() => {
-      new Customer(faker.datatype.uuid(), '')
+      void new Customer(faker.datatype.uuid(), '')
     }).toThrowError('Name is required')
-  });
+  })
 
   it('should change name', () => {
     const customer = mockCustomer()
@@ -61,4 +60,4 @@ describe('Customer unit tests', () => {
     customer.addRewardPoints(10)
     expect(customer.rewardPoints).toBe(20)
   })
-});
+})

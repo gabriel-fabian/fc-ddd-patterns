@@ -31,7 +31,7 @@
 
     /* Type Checking */
     "strict": true,                                      /* Enable all strict type-checking options. */
-    "strictNullChecks": false,                           /* When type checking, take into account 'null' and 'undefined'. */
+    "strictNullChecks": true,                           /* When type checking, take into account 'null' and 'undefined'. */
 
     /* Completeness */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */

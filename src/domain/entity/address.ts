@@ -1,10 +1,10 @@
 export default class Address {
-  _street : string = ''
-  _number : number = 0
-  _city   : string = ''
+  _street: string = ''
+  _number: number = 0
+  _city: string = ''
   _zipCode: string = ''
 
-  constructor(street: string, number: number, city: string, zipCode: string) {
+  constructor (street: string, number: number, city: string, zipCode: string) {
     this._street  = street
     this._number  = number
     this._city    = city
@@ -13,23 +13,23 @@ export default class Address {
     this.validate()
   }
 
-  get street(): string {
+  get street (): string {
     return this._street
   }
 
-  get number(): number {
+  get number (): number {
     return this._number
   }
 
-  get zipCode(): string {
+  get zipCode (): string {
     return this._zipCode
   }
 
-  get city(): string {
+  get city (): string {
     return this._city
   }
 
-  validate() {
+  validate (): void {
     if (this.street.length === 0) {
       throw new Error('Street is required')
     }

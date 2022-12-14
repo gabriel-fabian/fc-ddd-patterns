@@ -1,33 +1,33 @@
-import { OrderItem } from './';
+import { OrderItem } from '.'
 
 export default class Order {
-  private _id: string
-  private _customer_id: string
-  private _items: OrderItem[] = []
-  private _total: number
+  private readonly _id: string
+  private readonly _customer_id: string
+  private readonly _items: OrderItem[] = []
+  private readonly _total: number
 
-  constructor(id: string, customer_id: string, items: OrderItem[]) {
-    this._id         = id
-    this._customer_id = customer_id
-    this._items      = items
-    this._total      = this.total()
+  constructor (id: string, customerId: string, items: OrderItem[]) {
+    this._id          = id
+    this._customer_id = customerId
+    this._items       = items
+    this._total       = this.total()
 
     this.validate()
   }
 
-  get id(): string {
+  get id (): string {
     return this._id
   }
 
-  get customer_id(): string {
+  get customer_id (): string {
     return this._customer_id
   }
 
-  get items(): OrderItem[] {
+  get items (): OrderItem[] {
     return this._items
   }
 
-  validate(): boolean {
+  validate (): boolean {
     if (this._id.length === 0) {
       throw new Error('Id is required')
     }
@@ -40,14 +40,19 @@ export default class Order {
       throw new Error('Item qtd must be greater than 0')
     }
 
-    if (this._items.some(item => item._quantity <= 0)) {
+    if (this._items.some((item) => item._quantity <= 0)) {
       throw new Error('Item quantity must be greater than 0')
     }
 
     return true
   }
 
-  total(): number {
+  total (): number {
     return this._items.reduce((acc, item) => acc + item.orderItemTotal(), 0)
+  }
+
+  addItem (item: OrderItem): OrderItem[] {
+    this._items.push(item)
+    return this._items
   }
 }
