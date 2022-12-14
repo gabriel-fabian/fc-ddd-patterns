@@ -1,8 +1,8 @@
-import { Customer, Order, OrderItem } from '@/domain/entity';
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from 'uuid'
+import { Customer, Order, OrderItem } from '@/domain/entity'
 
 export default class OrderService {
-  static placeOrder(customer: Customer, items: OrderItem[]): Order {
+  static placeOrder (customer: Customer, items: OrderItem[]): Order {
     if (items.length === 0) {
       throw new Error('Order must have at least one item')
     }
@@ -12,7 +12,7 @@ export default class OrderService {
     return order
   }
 
-  static total(orders: Order[]): number {
+  static total (orders: Order[]): number {
     return orders.reduce((acc, order) => acc + order.total(), 0)
   }
 }

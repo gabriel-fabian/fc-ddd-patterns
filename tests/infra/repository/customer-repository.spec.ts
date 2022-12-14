@@ -1,16 +1,15 @@
+import { Sequelize } from 'sequelize-typescript'
+import { faker } from '@faker-js/faker'
 import { CustomerModel } from '@/infra/db/sequelize/model'
 import { CustomerRepository } from '@/infra/repository'
 import { mockCustomer } from '@/tests/domain/mocks'
 import { Customer } from '@/domain/entity'
 
-import { Sequelize } from 'sequelize-typescript'
-import { faker } from '@faker-js/faker'
-
 const makeSut = (): CustomerRepository => new CustomerRepository()
 
 const createCustomer = (): Customer => {
   const customerRepository = makeSut()
-  const customer = mockCustomer()
+  const customer           = mockCustomer()
   customerRepository.create(customer)
   return customer
 }
@@ -35,18 +34,18 @@ describe('CustomerRepository', () => {
   })
 
   it('should create a customer', async () => {
-    const customer = createCustomer()
-    const customerModel = await CustomerModel.findOne({ where: { id: customer.id }})
+    const customer      = createCustomer()
+    const customerModel = await CustomerModel.findOne({ where: { id: customer.id } })
 
     expect(customerModel?.toJSON()).toStrictEqual({
-      id          : customer.id,
-      name        : customer.name,
-      active      : customer.isActive(),
+      id: customer.id,
+      name: customer.name,
+      active: customer.isActive(),
       rewardPoints: customer.rewardPoints,
-      street      : customer.address.street,
-      number      : customer.address.number,
-      city        : customer.address.city,
-      zipCode     : customer.address.zipCode
+      street: customer.address.street,
+      number: customer.address.number,
+      city: customer.address.city,
+      zipCode: customer.address.zipCode
     })
   })
 
@@ -56,17 +55,17 @@ describe('CustomerRepository', () => {
     const name     = faker.name.firstName()
     customer.changeName(name)
     await sut.update(customer)
-    const customerModel = await CustomerModel.findOne({ where: { id: customer.id }})
+    const customerModel = await CustomerModel.findOne({ where: { id: customer.id } })
 
     expect(customerModel?.toJSON()).toStrictEqual({
-      id          : customer.id,
-      name        : name,
-      active      : customer.isActive(),
+      id: customer.id,
+      name,
+      active: customer.isActive(),
       rewardPoints: customer.rewardPoints,
-      street      : customer.address.street,
-      number      : customer.address.number,
-      zipCode     : customer.address.zipCode,
-      city        : customer.address.city
+      street: customer.address.street,
+      number: customer.address.number,
+      zipCode: customer.address.zipCode,
+      city: customer.address.city
     })
   })
 
@@ -87,11 +86,11 @@ describe('CustomerRepository', () => {
     }).rejects.toThrow('Customer not found')
   })
 
-  it("should find all customers", async () => {
+  it('should find all customers', async () => {
     const sut       = makeSut()
     const customer1 = createCustomer()
-    customer1.addRewardPoints(10);
-    customer1.activate();
+    customer1.addRewardPoints(10)
+    customer1.activate()
 
     const customer2 = createCustomer()
     customer2.addRewardPoints(20)
@@ -99,10 +98,10 @@ describe('CustomerRepository', () => {
     sut.update(customer1)
     sut.update(customer2)
 
-    const customers = await sut.findAll();
+    const customers = await sut.findAll()
 
-    expect(customers).toHaveLength(2);
-    expect(customers).toContainEqual(customer1);
-    expect(customers).toContainEqual(customer2);
-  });
+    expect(customers).toHaveLength(2)
+    expect(customers).toContainEqual(customer1)
+    expect(customers).toContainEqual(customer2)
+  })
 })

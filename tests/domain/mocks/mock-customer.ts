@@ -1,5 +1,5 @@
-import { Address, Customer } from '@/domain/entity'
 import { faker } from '@faker-js/faker'
+import { Address, Customer } from '@/domain/entity'
 
 export const mockCustomer = (): Customer => {
   const customer = new Customer(faker.datatype.uuid(), faker.name.firstName())

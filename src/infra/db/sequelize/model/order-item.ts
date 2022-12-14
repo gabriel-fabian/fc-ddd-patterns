@@ -20,14 +20,14 @@ export default class OrderItemModel extends Model {
   declare id: string
 
   @ForeignKey(() => ProductModel)
-  @Column({allowNull: false})
+  @Column({ allowNull: false })
   declare product_id: string
 
   @BelongsTo(() => ProductModel)
   declare product: ProductModel
 
   @ForeignKey(() => OrderModel)
-  @Column({allowNull: false})
+  @Column({ allowNull: false })
   declare order_id: string
 
   @BelongsTo(() => OrderModel)
@@ -39,6 +39,6 @@ export default class OrderItemModel extends Model {
   @Column({ allowNull: false })
   declare name: string
 
-  @Column({allowNull: false})
+  @Column({ allowNull: false })
   declare price: number
 }
