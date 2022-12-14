@@ -3,7 +3,7 @@ import EventHandlerInterface from './event-handler-interface'
 import EventInterface from './event-interface'
 
 export default class EventDispatcher implements EventDispatcherInterface {
-  private readonly eventHandlers: { [eventName: string]: EventHandlerInterface[] } = {}
+  private eventHandlers: { [eventName: string]: EventHandlerInterface[] } = {}
 
   get getEventHandlers (): { [eventName: string ]: EventHandlerInterface[] } {
     return this.eventHandlers
@@ -25,6 +25,9 @@ export default class EventDispatcher implements EventDispatcherInterface {
     }
   }
 
-  unregisterAll (): void {}
+  unregisterAll (): void {
+    this.eventHandlers = {}
+  }
+
   notify (event: EventInterface): void {}
 }
