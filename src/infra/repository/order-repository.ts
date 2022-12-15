@@ -1,5 +1,4 @@
-import { Order, OrderItem } from '@/domain/entity'
-import { OrderRepositoryInterface } from '@/domain/repository'
+import { Order, OrderItem, OrderRepositoryInterface } from '@/domain/checkout'
 import { OrderItemModel, OrderModel } from '@/infra/db/sequelize/model'
 
 export default class OrderRepository implements OrderRepositoryInterface {

@@ -1,6 +1,9 @@
 import { Sequelize } from 'sequelize-typescript'
 import { faker } from '@faker-js/faker'
-import { Customer, Order, OrderItem, Product } from '@/domain/entity'
+
+import { Customer } from '@/domain/customer'
+import { Order, OrderItem } from '@/domain/checkout'
+import { Product } from '@/domain/product'
 import { CustomerModel, OrderItemModel, OrderModel, ProductModel } from '@/infra/db/sequelize/model'
 import { CustomerRepository, OrderRepository, ProductRepository } from '@/infra/repository'
 import { mockCustomer, mockProduct, mockOrder, mockOrderItem } from '@/tests/domain/mocks'

@@ -1,5 +1,8 @@
 import { faker } from '@faker-js/faker'
-import { Customer, Order, OrderItem, Product } from '@/domain/entity'
+
+import { Customer } from '@/domain/customer'
+import { Order, OrderItem } from '@/domain/checkout'
+import { Product } from '@/domain/product'
 import { mockCustomer } from './mock-customer'
 import { mockProduct } from './mock-product'
 

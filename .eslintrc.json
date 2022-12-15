@@ -11,6 +11,7 @@
   "rules": {
     "@typescript-eslint/no-extraneous-class": 0,
     "@typescript-eslint/no-floating-promises": 0,
+    "@typescript-eslint/restrict-plus-operands": 0,
     "@typescript-eslint/restrict-template-expressions": 0,
     "@typescript-eslint/strict-boolean-expressions": 0,
     "class-methods-use-this": 0,

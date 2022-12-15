@@ -1,5 +1,4 @@
-import { Address, Customer } from '@/domain/entity'
-import { CustomerRepositoryInterface } from '@/domain/repository'
+import { Address, Customer, CustomerRepositoryInterface } from '@/domain/customer'
 import { CustomerModel } from '@/infra/db/sequelize/model'
 
 export default class CustomerRepository implements CustomerRepositoryInterface {

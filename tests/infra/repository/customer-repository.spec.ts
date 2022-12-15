@@ -1,9 +1,10 @@
 import { Sequelize } from 'sequelize-typescript'
 import { faker } from '@faker-js/faker'
+
 import { CustomerModel } from '@/infra/db/sequelize/model'
 import { CustomerRepository } from '@/infra/repository'
 import { mockCustomer } from '@/tests/domain/mocks'
-import { Customer } from '@/domain/entity'
+import { Customer } from '@/domain/customer'
 
 const makeSut = (): CustomerRepository => new CustomerRepository()
 
