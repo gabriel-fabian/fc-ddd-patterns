@@ -1,5 +1,5 @@
 import { Address, Customer, CustomerRepositoryInterface } from '@/domain/customer'
-import { CustomerModel } from '@/infra/db/sequelize/model'
+import CustomerModel from './customer-model'
 
 export default class CustomerRepository implements CustomerRepositoryInterface {
   async create (entity: Customer): Promise<void> {

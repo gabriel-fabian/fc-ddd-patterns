@@ -7,8 +7,8 @@ import {
   BelongsTo,
   HasMany
 } from 'sequelize-typescript'
-import CustomerModel from './customer'
-import OrderItemModel from './order-item'
+import { CustomerModel } from '@/infra/customer'
+import { OrderItemModel } from '@/infra/order'
 
 @Table({
   tableName: 'orders',

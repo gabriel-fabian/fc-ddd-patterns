@@ -2,8 +2,7 @@ import { Sequelize } from 'sequelize-typescript'
 import { faker } from '@faker-js/faker'
 
 import { Product } from '@/domain/product'
-import { ProductModel } from '@/infra/db/sequelize/model'
-import { ProductRepository } from '@/infra/repository'
+import { ProductModel, ProductRepository } from '@/infra/product'
 import { mockProduct } from '@/tests/domain/mocks'
 
 const makeSut = (): ProductRepository => new ProductRepository()
